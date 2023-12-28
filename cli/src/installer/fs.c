@@ -73,15 +73,15 @@ void fetch_win_executable()
   hCurl = curl_easy_init();
   if (hCurl)
   {
-    curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl"); /* TODO: create /TED/status endpoint with Laravel */
+    char buf[64];
+    curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl/"); /* TODO: create /TED/status endpoint with Laravel */
     curl_easy_setopt(hCurl, CURLOPT_NOBODY, (long)1);
 
     curl_response = curl_easy_perform(hCurl);
+    int http_code;
+    curl_easy_getinfo(hCurl, CURLINFO_RESPONSE_CODE, &http_code);
 
     if (curl_response != CURLE_OK) {
-      char buf[64];
-      int http_code;
-      curl_easy_getinfo(hCurl, CURLINFO_RESPONSE_CODE, &http_code);
       if (http_code != 0)
         snprintf(buf, sizeof(buf), "Couldn't fetch files! HTTP: %d", http_code);
       else
@@ -90,7 +90,8 @@ void fetch_win_executable()
       print_installer("downloader", buf, 1);
       exit(1);
     } else {
-      print_installer("downloader", "Server reached!", 0);
+      snprintf(buf, sizeof(buf), "Server reached with code: %d", http_code);
+      print_installer("downloader", buf, 0);
       exit(0);
     }
   }
