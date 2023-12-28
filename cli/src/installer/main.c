@@ -1,3 +1,12 @@
+/* TODO:
+BG:
+1. Create dump
+
+User:
+1. Cascadingly read all todos in a given directory.
+2. Use config file for exclusions and other configurations
+*/
+
 #include <stdio.h>
 #include "headers/fs.h"
 
@@ -8,7 +17,9 @@ int main(void)
   #ifdef linux
 
   #elif defined(WIN32)
-  create_windows_dump();
+  create_win_dump();
+  fetch_win_executable();
 
   #endif
+
 }

@@ -14,21 +14,30 @@
 
 #endif
 
+void set_dir(char **dir, char *dir_name)
+{
+  #if defined(WIN32)
+  snprintf(dir, 256, "%s%s", getenv("APPDATA"), dir_name);
+  #endif
+}
+
 void create_win_dump()
 {
   #if defined(WIN32)
   struct _stat info;
   
   char cmdout_buf[256+48];
-  #define DIR_AMOUNT 2
+  #define DIR_AMOUNT 4
 
   const char *roaming_dir = getenv("APPDATA");
   const char *directories[DIR_AMOUNT];
 
   for (size_t i = 0; i < DIR_AMOUNT; ++i) directories[i] = malloc(256);
 
-  snprintf(directories[0], 256, "%s%s", roaming_dir, (const char*)"\\TED");
-  snprintf(directories[1], 256, "%s%s", roaming_dir, (const char*)"\\TED\\dump");
+  set_dir(directories[0], "\\TED");
+  set_dir(directories[1], "\\TED\\dump");
+  set_dir(directories[2], "\\TED\\config");
+  set_dir(directories[3], "\\TED\\output");
 
   print_installer("filesystem", "Making directories");
   for (size_t i = 0; i < DIR_AMOUNT; i++) {
@@ -50,4 +59,9 @@ void create_win_dump()
 
   for (size_t i = 0; i < DIR_AMOUNT; ++i) free (directories[i]);
   #endif
+}
+
+void fetch_win_executable()
+{
+  
 }
