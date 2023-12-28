@@ -74,7 +74,7 @@ void fetch_win_executable()
   if (hCurl)
   {
     curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl"); /* TODO: create /TED/status endpoint with Laravel */
-    curl_easy_setopt(hCurl, CURLOPT_NOBODY, NULL);
+    curl_easy_setopt(hCurl, CURLOPT_NOBODY, (long)1);
 
     curl_response = curl_easy_perform(hCurl);
 
@@ -90,7 +90,7 @@ void fetch_win_executable()
       print_installer("downloader", buf, 1);
       exit(1);
     } else {
-      printf("downloader", "Server reached!", 0);
+      print_installer("downloader", "Server reached!", 0);
       exit(0);
     }
   }
