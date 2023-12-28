@@ -2,6 +2,8 @@
   "files.associations": {
     "*.ejs": "html",
     "fs.h": "c",
-    "stdio.h": "c"
+    "stdio.h": "c",
+    "windows.h": "c",
+    "cmdout.h": "c"
   }
 }
