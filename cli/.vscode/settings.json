@@ -4,6 +4,7 @@
     "fs.h": "c",
     "stdio.h": "c",
     "windows.h": "c",
-    "cmdout.h": "c"
+    "cmdout.h": "c",
+    "curl.h": "c"
   }
 }

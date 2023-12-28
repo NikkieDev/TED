@@ -1,6 +1,6 @@
 #include "headers/fs.h"
 #include "headers/cmdout.h"
-#include "libs/curl/curl.h"
+#include "../../../libs/curl/curl.h"
 
 #include <stdio.h>
 
