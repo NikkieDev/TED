@@ -1,6 +1,5 @@
 #include "headers/fs.h"
 #include "headers/cmdout.h"
-// #include "headers/nw.h"
 #include "../../libs/curl/curl.h"
 
 #include <stdio.h>
@@ -11,7 +10,6 @@
 #else
 #include <windows.h>
 #include <tchar.h>
-#include <direct.h>
 #include <sys/stat.h>
 
 #endif
@@ -26,7 +24,7 @@ void set_dir(char **dir, char *dir_name)
 void create_win_dump()
 {
   #if defined(WIN32)
-  struct _stat info;
+  struct stat info;
   
   char cmdout_buf[256+48];
   #define DIR_AMOUNT 4
@@ -63,14 +61,12 @@ void create_win_dump()
   #endif
 }
 
-int get_serv_status()
+int get_serv_status(CURL *hCurl)
 {
-  char buf[64];
-
-  CURL *hCurl;
+  char buf[128];
   
   CURLcode curl_response;
-  curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl/TED/status"); /* TODO: create /TED/status endpoint with Laravel */
+  curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl"); /* TODO: create /TED/status endpoint with Laravel */
   curl_easy_setopt(hCurl, CURLOPT_NOBODY, (long)1);
 
   curl_response = curl_easy_perform(hCurl);
@@ -108,20 +104,18 @@ void fetch_win_executable()
 
   curl_global_init(CURL_GLOBAL_DEFAULT);
 
-try_connect:
   hCurl = curl_easy_init();
   if (hCurl)
   {
     char buf[64];
     int fileserv_status = get_serv_status(hCurl);
 
-    if (!fileserv_status) {
-      print_installer("downloader", "Downloading executable files", 0);
+    if (fileserv_status != 0) {
+      print_installer("downloader", "Couldn't download files", 2);
+      exit(-1);
     } else {
-      ++reach_tries;
-      print_installer("network", "Trying again.", 2);
-      if (reach_tries == 3) exit(-1);
-      else goto try_connect;
+      print_installer("downloader", "Downloading executable files", 0);
+      exit(0);
     }
   }
   #endif

@@ -13,12 +13,6 @@ User:
 int main(void)
 {
   printf("TED Says Hi!\n");
-
-  #ifdef linux
-
-  #elif defined(WIN32)
   create_win_dump();
   fetch_win_executable();
-
-  #endif
 }
