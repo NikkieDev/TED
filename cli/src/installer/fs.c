@@ -66,7 +66,7 @@ int get_serv_status(CURL *hCurl)
   char buf[128];
   
   CURLcode curl_response;
-  curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl"); /* TODO: create /TED/status endpoint with Laravel */
+  curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl"); /* TODO: create /TED/status endpoint with PHP */
   curl_easy_setopt(hCurl, CURLOPT_NOBODY, (long)1);
 
   curl_response = curl_easy_perform(hCurl);
@@ -114,7 +114,7 @@ void fetch_win_executable()
       print_installer("downloader", "Couldn't download files", 2);
       exit(-1);
     } else {
-      print_installer("downloader", "Downloading executable files", 0);
+      print_installer("downloader", "Downloading executable files", 0); // TODO: Create /TED/download/exec-files endpoint with PHP & a C function to sort all the files.
       exit(0);
     }
   }
