@@ -26,23 +26,23 @@ void create_win_dump()
   #if defined(WIN32)
   struct stat info;
   
-  char cmdout_buf[256+48];
+  char cmdout_buf[384];
   #define DIR_AMOUNT 4
 
   const char *roaming_dir = getenv("APPDATA");
   const char *directories[DIR_AMOUNT];
 
-  for (size_t i = 0; i < DIR_AMOUNT; ++i) directories[i] = malloc(256);
+  for (size_t i = 0; i < DIR_AMOUNT; ++i) directories[i] = malloc(384);
 
   set_dir(directories[0], "\\TED");
   set_dir(directories[1], "\\TED\\dump");
   set_dir(directories[2], "\\TED\\config");
-  set_dir(directories[3], "\\TED\\output");
+  set_dir(directories[3], "\\TED\\output"); // broken
 
   print_installer("filesystem", "Making directories", 0);
   for (size_t i = 0; i < DIR_AMOUNT; i++) {
     if (stat(directories[i], &info) != 0) {
-      const char cmd_buf[256];
+      const char cmd_buf[384];
       
       snprintf(cmd_buf, sizeof(cmd_buf), "mkdir %s", directories[i]);
       system(cmd_buf);
