@@ -21,5 +21,4 @@ int main(void)
   fetch_win_executable();
 
   #endif
-
 }
