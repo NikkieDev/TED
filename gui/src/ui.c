@@ -30,11 +30,6 @@ void CreateLabel(const char *title, int pos[2], itemSize size, HWND *hwnd, void 
 
 void GetParentSize(HWND *parentHandle, itemSize *size)
 {
-  if (!IsWindow(*parentHandle)) {
-    OutputDebugString("Invalid handle\n");
-    return;
-  } else OutputDebugString("Valid handle\n");
-
   RECT rect;
   GetClientRect(*parentHandle, &rect);
   
@@ -44,10 +39,8 @@ void GetParentSize(HWND *parentHandle, itemSize *size)
 
 void CreateUI(HWND *hwnd)
 {
-  char DbgStr[64];
   itemSize parentSize;
-  GetParentSize(*hwnd, &parentSize);
-  OutputDebugString("Still works on line 47\n");
+  GetParentSize(hwnd, &parentSize);
 
-  // CreateLabel("TED", (int[2]){0,0}, childSize, hwnd, NULL);
+  CreateLabel("TED", (int[2]){0,0}, (itemSize){parentSize.width, 20}, hwnd, NULL);
 }
