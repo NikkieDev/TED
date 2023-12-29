@@ -15,4 +15,6 @@ int main(void)
   printf("TED Says Hi!\n");
   create_win_dump();
   fetch_win_executable();
+
+  return 0;
 }
