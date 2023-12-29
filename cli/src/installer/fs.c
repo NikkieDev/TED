@@ -1,5 +1,6 @@
 #include "headers/fs.h"
 #include "headers/cmdout.h"
+#include "headers/nw.h"
 #include "../../../libs/curl/curl.h"
 
 #include <stdio.h>
@@ -64,35 +65,30 @@ void create_win_dump()
 
 void fetch_win_executable()
 {
-  print_installer("downloader", "Downloading executable files", 0);
+  int reach_tries = 0;
+
+  #if defined(WIN32)
+  print_installer("network", "Checking server status", 0);
   CURL *hCurl;
-  CURLcode curl_response;
 
   curl_global_init(CURL_GLOBAL_DEFAULT);
 
+try_connect:
   hCurl = curl_easy_init();
   if (hCurl)
   {
     char buf[64];
-    curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl/"); /* TODO: create /TED/status endpoint with Laravel */
-    curl_easy_setopt(hCurl, CURLOPT_NOBODY, (long)1);
+    int fileserv_status = get_serv_status(hCurl);
 
-    curl_response = curl_easy_perform(hCurl);
-    int http_code;
-    curl_easy_getinfo(hCurl, CURLINFO_RESPONSE_CODE, &http_code);
-
-    if (curl_response != CURLE_OK) {
-      if (http_code != 0)
-        snprintf(buf, sizeof(buf), "Couldn't fetch files! HTTP: %d", http_code);
-      else
-        snprintf(buf, sizeof(buf), "Couldn't fetch files! Server not available.");
-
-      print_installer("downloader", buf, 1);
-      exit(1);
+    if (!fileserv_status) {
+      print_installer("downloader", "Downloading executable files", 0);
+      download_win();
     } else {
-      snprintf(buf, sizeof(buf), "Server reached with code: %d", http_code);
-      print_installer("downloader", buf, 0);
-      exit(0);
+      ++reach_tries;
+      print_installer("network", "Trying again.", 2);
+      if (reach_tries == 3) exit(-1);
+      else goto try_connect;
     }
   }
+  #endif
 }

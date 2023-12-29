@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.ejs": "html",
+    "cmdout.h": "c",
+    "nw.h": "c",
+    "curl.h": "c"
+  }
+}
