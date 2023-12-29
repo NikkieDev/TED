@@ -3,41 +3,39 @@
 #include "../../libs/curl/curl.h"
 
 #include <stdio.h>
-
-#ifdef linux
-#include <dirent.h>
-
-#else
 #include <windows.h>
 #include <tchar.h>
 #include <sys/stat.h>
 
-#endif
-
-void set_dir(char **dir, char *dir_name)
+void set_dir(char **dir, char *dir_name, char *roaming_dir)
 {
-  #if defined(WIN32)
-  snprintf(dir, 256, "%s%s", getenv("APPDATA"), dir_name);
-  #endif
+  snprintf(dir, 256, "%s%s", roaming_dir, dir_name);
 }
 
 void create_win_dump()
 {
-  #if defined(WIN32)
   struct stat info;
   
   char cmdout_buf[384];
   #define DIR_AMOUNT 4
 
-  const char *roaming_dir = getenv("APPDATA");
+  char *roaming_dir = getenv("APPDATA");
+  printf("%s\n", roaming_dir);
+  for (int i = 0; i < strlen(roaming_dir); i++)
+  {
+    if (roaming_dir[i] == '\\') {
+      roaming_dir[i] = '/';
+    }
+  }
+
   const char *directories[DIR_AMOUNT];
 
   for (size_t i = 0; i < DIR_AMOUNT; ++i) directories[i] = malloc(384);
 
-  set_dir(directories[0], "\\TED");
-  set_dir(directories[1], "\\TED\\dump");
-  set_dir(directories[2], "\\TED\\config");
-  set_dir(directories[3], "\\TED\\output"); // broken
+  set_dir(directories[0], "/TED", roaming_dir);
+  set_dir(directories[1], "/TED/dump", roaming_dir);
+  set_dir(directories[2], "/TED/config", roaming_dir);
+  set_dir(directories[3], "/TED/output", roaming_dir); // broken
 
   print_installer("filesystem", "Making directories", 0);
   for (size_t i = 0; i < DIR_AMOUNT; i++) {
@@ -58,7 +56,6 @@ void create_win_dump()
   }
 
   for (size_t i = 0; i < DIR_AMOUNT; ++i) free (directories[i]);
-  #endif
 }
 
 int get_serv_status(CURL *hCurl)
@@ -98,7 +95,6 @@ void fetch_win_executable()
 {
   int reach_tries = 0;
 
-  #if defined(WIN32)
   print_installer("network", "Checking server status", 0);
   CURL *hCurl;
 
@@ -118,5 +114,4 @@ void fetch_win_executable()
       exit(0);
     }
   }
-  #endif
 }
