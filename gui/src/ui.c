@@ -1,7 +1,7 @@
 #include "headers/ui.h"
 #include <windows.h>
 
-void InitSubMenu(HWND *parentHandle, void *param) // sort into init.c
+void InitSubMenu(HWND *parentHandle, void *param) // sort into init.c /* EDIT: Prolly just delete this lol : */
 {
 
 }
