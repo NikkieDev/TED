@@ -4,4 +4,5 @@ I will probably develop this in C/C++ (Mostly C, Fuck C++), and there's no guara
 There will hopefully be: 
 1. A VSCode Extension
 2. An Application for Windows
-3. A CLI application for Linux
+3. A CLI application for Linux & Windows
+4. Fuck any MacOS users.
