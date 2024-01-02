@@ -7,7 +7,7 @@ gui_app:
 	gcc ./gui/src/*.c -o ./out/gui/TED -mwindows -static -static-libgcc
 
 gui_d:
-	gcc ./gui/src/*.c -o ./out/gui/TED
+	gcc ./gui/src/*.c -o ./out/gui/TED -static -static-libgcc
 
 clean:
 	rm ./out/cli/TED_installer.exe

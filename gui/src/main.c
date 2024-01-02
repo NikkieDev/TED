@@ -1,12 +1,13 @@
 #include <windows.h>
 #include "headers/ui.h"
+#include "headers/menu.h"
 
 LRESULT CALLBACK WindowProc(HWND mainWindow, UINT uMsg, WPARAM wParam, LPARAM lParam); // hoisted method
 
 int WINAPI WinMain(HINSTANCE handleInstance, HINSTANCE handlePreviousInstance, LPSTR lpCmdLine, int nCmdShow)
 {
   wchar_t *CLASS_NAME = "WindowClass";
-  wchar_t *WINDOW_NAME = "Main Window";
+  wchar_t *WINDOW_NAME = "TED";
 
   WNDCLASS wc = {};
   wc.lpfnWndProc = WindowProc;
@@ -28,8 +29,8 @@ int WINAPI WinMain(HINSTANCE handleInstance, HINSTANCE handlePreviousInstance, L
     return 0;
   }
 
-  InitMenu(&mainWindow, NULL);
-  CreateUI(&mainWindow);
+  InitMenu(mainWindow);
+  CreateUI(mainWindow);
   ShowWindow(mainWindow, 1);
   UpdateWindow(mainWindow);
   
@@ -53,11 +54,8 @@ LRESULT CALLBACK WindowProc(HWND mainWindow, UINT uMsg, WPARAM wParam, LPARAM lP
       return 0;
     }
     case WM_COMMAND:
-    if (LOWORD(wParam) == 1) // TODO: Turn into EventHandler file
-    {
-      MessageBox(mainWindow, "TED says Hi!", "Info", MB_OK | MB_ICONINFORMATION);
-    } return 0;
-  }
+      HandleEvent(LOWORD(wParam), mainWindow);
+  };
 
   return DefWindowProc(mainWindow, uMsg, wParam, lParam);
 }

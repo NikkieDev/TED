@@ -120,7 +120,7 @@ void fetch_win_executable()
       print_installer("downloader", "Couldn't download files", 2);
       exit(-1);
     } else {
-      print_installer("downloader", "Downloading executable files", 0); // TODO: Create /TED/download/exec-files endpoint with PHP & a C function to sort all the files.
+      print_installer("downloader", "Downloading executable files", 0); // TODO: Create socket file server & a C function to download & sort all the files.
       exit(0);
     }
   }

@@ -9,7 +9,6 @@ typedef struct itemSize
   int height
 } itemSize;
 
-void CreateUI();
-void InitMenu(HWND *hPtr, void *p);
+void CreateUI(HWND hwnd);
 
 #endif
