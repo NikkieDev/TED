@@ -7,9 +7,9 @@
 #include <tchar.h>
 #include <sys/stat.h>
 
-void set_dir(char **dir, char *dir_name, char *roaming_dir)
+void set_dir(char *dir, char *dir_name, char *roaming_dir)
 {
-  snprintf(dir, 256, "%s%s", roaming_dir, dir_name);
+  snprintf(dir, 256, "%s\\%s", roaming_dir, dir_name);
 }
 
 void create_win_dump()
@@ -21,33 +21,43 @@ void create_win_dump()
 
   char *roaming_dir = getenv("APPDATA");
   printf("%s\n", roaming_dir);
-  for (int i = 0; i < strlen(roaming_dir); i++)
-  {
-    if (roaming_dir[i] == '\\') {
-      roaming_dir[i] = '/';
-    }
-  }
+  // for (int i = 0; i < strlen(roaming_dir); i++)
+  // {
+  //   if (roaming_dir[i] == '\\') {
+  //     roaming_dir[i] = '\\\\';
+  //   }
+  // }
 
-  const char *directories[DIR_AMOUNT];
+  char *directories[DIR_AMOUNT];
 
   for (size_t i = 0; i < DIR_AMOUNT; ++i) directories[i] = malloc(384);
 
-  set_dir(directories[0], "/TED", roaming_dir);
-  set_dir(directories[1], "/TED/dump", roaming_dir);
-  set_dir(directories[2], "/TED/config", roaming_dir);
-  set_dir(directories[3], "/TED/output", roaming_dir); // broken
+  set_dir(directories[0], "TED", roaming_dir);
+  set_dir(directories[1], "TED\\dump", roaming_dir);
+  set_dir(directories[2], "TED\\config", roaming_dir);
+  set_dir(directories[3], "TED\\output", roaming_dir); // broken
 
   print_installer("filesystem", "Making directories", 0);
   for (size_t i = 0; i < DIR_AMOUNT; i++) {
-    if (stat(directories[i], &info) != 0) {
-      const char cmd_buf[384];
-      
-      snprintf(cmd_buf, sizeof(cmd_buf), "mkdir %s", directories[i]);
-      system(cmd_buf);
+    if (stat(directories[i], &info) != 0) {      
+      if (CreateDirectory(directories[i], NULL)) {
+        memset(cmdout_buf, 0, sizeof(cmdout_buf));
+        snprintf(cmdout_buf, sizeof(cmdout_buf), "Created directory %s", directories[i]);
+        print_installer("filesystem", cmdout_buf, 0);
+      } else {
+        memset(cmdout_buf, 0, sizeof(cmdout_buf));
+        snprintf(cmdout_buf, sizeof(cmdout_buf), "Error creating dir %s", directories[i]);
+        print_installer("filesystem", cmdout_buf, 1);
 
-      memset(cmdout_buf, 0, sizeof(cmdout_buf));
-      snprintf(cmdout_buf, sizeof(cmdout_buf), "Created directory %s", directories[i]);
-      print_installer("filesystem", cmdout_buf, 0);
+        DWORD error = GetLastError();
+        if (error == ERROR_PATH_NOT_FOUND)
+          printf("Path not found!\n");
+        else if (error == ERROR_ACCESS_DENIED)
+          printf("Access to path denied!\n");
+        else
+          printf("Error code: %lu\n", error);
+      }
+
     } else {
       memset(cmdout_buf, 0, sizeof(cmdout_buf));
       snprintf(cmdout_buf, sizeof(cmdout_buf), "Directory %s already exists", directories[i]);
