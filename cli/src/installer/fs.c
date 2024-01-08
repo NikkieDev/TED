@@ -5,6 +5,7 @@
 #include <sys/stat.h>
 
 #if defined(WIN32)
+#include <winsock2.h>
 #include <windows.h>
 #include <tchar.h>
 #include "../../libs/curl/curl.h"
@@ -13,7 +14,7 @@
 void set_dir(char *dir, char *child, char *parent)
 {
   #if defined(WIN32)
-  snprintf(dir, 256, "%s\\%s", roaming_dir, dir_name);
+  snprintf(dir, 256, "%s\\%s", parent, child);
   #else
   snprintf(dir, 256, "%s/%s", parent, child);
   #endif
@@ -25,16 +26,9 @@ void create_win_dump()
   struct stat info;
   
   char cmdout_buf[384];
-  const int DIR_AMOUNT 4 // defining within a function is bad practice.
-  // refactor to const int
+  const int DIR_AMOUNT = 4;
 
   char *roaming_dir = getenv("APPDATA");
-  // for (int i = 0; i < strlen(roaming_dir); i++)
-  // {
-  //   if (roaming_dir[i] == '\\') {
-  //     roaming_dir[i] = '\\\\';
-  //   }
-  // }
 
   char *directories[DIR_AMOUNT];
 
@@ -43,7 +37,7 @@ void create_win_dump()
   set_dir(directories[0], "TED", roaming_dir);
   set_dir(directories[1], "TED\\dump", roaming_dir);
   set_dir(directories[2], "TED\\config", roaming_dir);
-  set_dir(directories[3], "TED\\output", roaming_dir); // broken
+  set_dir(directories[3], "TED\\output", roaming_dir);
 
   print_installer("filesystem", "Making directories", 0);
   for (size_t i = 0; i < DIR_AMOUNT; i++) {
@@ -81,7 +75,7 @@ int get_serv_status(CURL *hCurl)
   char buf[128];
   
   CURLcode curl_response;
-  curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl"); /* TODO: create /TED/status endpoint with PHP */
+  curl_easy_setopt(hCurl, CURLOPT_URL, "http://node.kubyx.nl"); /* TODO: create /TED/status endpoint with PHP to check if socket server is running */
   curl_easy_setopt(hCurl, CURLOPT_NOBODY, (long)1);
 
   curl_response = curl_easy_perform(hCurl);
