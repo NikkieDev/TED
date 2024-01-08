@@ -1,26 +1,34 @@
 #include "headers/fs.h"
 #include "headers/cmdout.h"
-#include "../../libs/curl/curl.h"
-
 #include <stdio.h>
-#include <windows.h>
-#include <tchar.h>
+#include <stdlib.h>
 #include <sys/stat.h>
 
-void set_dir(char *dir, char *dir_name, char *roaming_dir)
+#if defined(WIN32)
+#include <windows.h>
+#include <tchar.h>
+#include "../../libs/curl/curl.h"
+#endif
+
+void set_dir(char *dir, char *child, char *parent)
 {
+  #if defined(WIN32)
   snprintf(dir, 256, "%s\\%s", roaming_dir, dir_name);
+  #else
+  snprintf(dir, 256, "%s/%s", parent, child);
+  #endif
 }
 
+#if defined(WIN32)
 void create_win_dump()
 {
   struct stat info;
   
   char cmdout_buf[384];
-  #define DIR_AMOUNT 4
+  const int DIR_AMOUNT 4 // defining within a function is bad practice.
+  // refactor to const int
 
   char *roaming_dir = getenv("APPDATA");
-  printf("%s\n", roaming_dir);
   // for (int i = 0; i < strlen(roaming_dir); i++)
   // {
   //   if (roaming_dir[i] == '\\') {
@@ -125,3 +133,51 @@ void fetch_win_executable()
     }
   }
 }
+#endif
+
+#ifdef __unix__
+int create_lin_dump()
+{
+  const int DIR_AMOUNT = 3;
+
+  struct stat dir_info;
+  char buf[128];
+
+  char *dirs[DIR_AMOUNT];
+
+  for (size_t i = 0; i < DIR_AMOUNT; ++i) dirs[i] = malloc(128);
+  set_dir(dirs[0], "TED", "/var/log");
+  set_dir(dirs[1], "TED", "/opt");
+  set_dir(dirs[2], "TED", "/etc");
+
+  for (size_t i = 0; i < DIR_AMOUNT; ++i)
+  {
+    if (stat(dirs[i], &dir_info) != 0)
+    {
+      if (mkdir(dirs[i], S_IRWXG | S_IRWXO | S_IRWXU) == -1)
+      {
+        snprintf(buf, sizeof(buf), "Cant create directory '%s'\n", dirs[i]);
+        print_installer("filesystem", buf, 1);
+        return 1;
+      } else
+      {
+        snprintf(buf, sizeof(buf), "Created directory %s", dirs[i]);
+        print_installer("filesystem", buf, 0);
+      }
+    } else
+    {
+      snprintf(buf, sizeof(buf), "Directory %s already exists", dirs[i]);
+      print_installer("filesystem", buf, 0);
+      ask_reinstall();
+    }
+  }
+
+  for (size_t i = 0; i < DIR_AMOUNT; ++i) free(dirs[i]);
+  return 0;
+}
+
+void fetch_lin_exec()
+{
+
+}
+#endif
