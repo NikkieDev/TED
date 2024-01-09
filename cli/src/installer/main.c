@@ -13,9 +13,14 @@ User:
 
 #ifdef __unix__
 #include <unistd.h>
-#endif
+#include "headers/args.h"
 
-int main(void)
+
+int main(int argc, char** argv)
+
+#else
+int main(void);
+#endif
 {
   printf("TED Says Hi!\n");
   #if defined(WIN32)
@@ -23,14 +28,45 @@ int main(void)
   fetch_win_executable();
   #endif
   #ifdef __unix__
+  int installed = 0;
+
   if (geteuid() != 0)
   {
     printf("This is an installer. Run with sudo!\n");
     exit(1);
   }
 
-  create_lin_dump();
-  fetch_lin_exec();
+  switch (arg_parse(argc, argv))
+  {
+    case 1:
+      installed = 1;
+      break;
+    case 0:
+      installed = 0;
+      break;
+    case -1:
+      reinstall();
+      installed = 1;
+      break;
+    case -2:
+      uninstall();
+      installed = 1;
+      break;
+    case -3:
+      uninstall();
+      installed = 1;
+    default:
+      printf("No arguments provided. No action taken.\nAvailable arguments:\n\tTED_installer -I (Install)\n\tTED_installer -R (Reinstall)\n\tTED_installer -U (Uninstall)\n\tTED_installer -u (Update)\n");
+      installed = 1;
+      break;
+  }
+
+  if (installed != 1)
+  {
+
+    linux_install();
+  }
+
   #endif
 
   return 0;
