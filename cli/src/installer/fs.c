@@ -9,11 +9,16 @@ Would have:
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
+#include <string.h>
 
 #if defined(WIN32)
 #include <windows.h>
 #include <tchar.h>
 #include "../../libs/curl/curl.h"
+#endif
+
+#ifdef __unix__
+#include <unistd.h>
 #endif
 
 void set_dir(char *dir, char *child, char *parent)
@@ -142,6 +147,13 @@ void fetch_win_executable()
 #endif
 
 #ifdef __unix__
+
+void linux_install()
+{
+  create_lin_dump();
+  fetch_lin_exec();
+}
+
 int create_lin_dump()
 {
   const int DIR_AMOUNT = 3;
@@ -176,8 +188,8 @@ int create_lin_dump()
       print_installer("filesystem", buf, 0);
 
       if (ask_reinstall() == 0){
+        reinstall();
         break;
-        printf("Reinstalling..\n");
       }
     }
   }
@@ -192,6 +204,35 @@ void fetch_lin_exec()
 }
 
 #endif
+void uninstall()
+{
+  #if defined(WIN32)
+  #endif
+
+  #ifdef __unix__
+    printf("uninstalling from \033[0;31mlinux\033[0;0m\n");
+    
+    const int DIR_AMOUNT = 3;
+    char buf[128];
+    char dirs[DIR_AMOUNT][sizeof(buf)];
+
+    strncpy(dirs[0], "/var/log/TED", sizeof(dirs[0]));
+    strncpy(dirs[1], "/etc/TED", sizeof(dirs[1]));
+    strncpy(dirs[2], "/opt/TED", sizeof(dirs[2]));
+
+    for (size_t i = 0; (signed int)i < DIR_AMOUNT; ++i)
+    {
+      snprintf(buf, sizeof(buf), "rm -rf %s", dirs[i]);
+      int status = system(buf);
+
+      memset(buf, 0, sizeof(buf));
+      snprintf(buf, sizeof(buf), "Directory %s deleted", dirs[i]);
+      print_installer("uninstall-fs", buf, 0);
+    }
+    
+  #endif
+}
+
 void reinstall()
 {
   #if defined(WIN32)
@@ -199,5 +240,26 @@ void reinstall()
 
   #ifdef __unix__
     printf("reinstalling for \033[0;31mlinux\033[0;0m\n");
+    
+    const int DIR_AMOUNT = 3;
+    char buf[128];
+    char dirs[DIR_AMOUNT][sizeof(buf)];
+
+    strncpy(dirs[0], "/var/log/TED", sizeof(dirs[0]));
+    strncpy(dirs[1], "/etc/TED", sizeof(dirs[1]));
+    strncpy(dirs[2], "/opt/TED", sizeof(dirs[2]));
+
+    for (size_t i = 0; (signed int)i < DIR_AMOUNT; ++i)
+    {
+      snprintf(buf, sizeof(buf), "rm -rf %s", dirs[i]);
+      int status = system(buf);
+
+      memset(buf, 0, sizeof(buf));
+      snprintf(buf, sizeof(buf), "Directory %s deleted", dirs[i]);
+      print_installer("reinstall-fs", buf, 0);
+    }
+
+    linux_install();
+    
   #endif
 }

@@ -28,15 +28,35 @@ int main(void);
   fetch_win_executable();
   #endif
   #ifdef __unix__
+  int installed = 0;
+
   if (geteuid() != 0)
   {
     printf("This is an installer. Run with sudo!\n");
     exit(1);
   }
 
-  if (arg_parse(argc, argv) == -1) printf("Reinstalling..\n"); reinstall();
-  create_lin_dump();
-  fetch_lin_exec();
+  switch (arg_parse(argc, argv))
+  {
+    case 0:
+      installed = 0;
+      break;
+    case -1:
+      reinstall();
+      installed = 1;
+      break;
+    case -2:
+      uninstall();
+      installed = 1;
+      break;
+    default:
+      printf("No arguments provided. No action taken.\nAvailable arguments:\n\tTED_installer -I (Install)\n\tTED_installer -R (Reinstall)\n\tTED_installer -U (Uninstall)\n\tTED_installer -u (Update)\n");
+      break;
+  }
+
+  if (installed != 1)
+    linux_install();
+
   #endif
 
   return 0;
