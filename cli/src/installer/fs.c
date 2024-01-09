@@ -38,7 +38,6 @@ void create_win_dump()
   
   char cmdout_buf[384];
   const int DIR_AMOUNT = 4;
-  const int DIR_AMOUNT = 4;
 
   char *roaming_dir = getenv("APPDATA");
 
