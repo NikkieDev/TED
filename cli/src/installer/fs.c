@@ -24,7 +24,7 @@ Would have:
 void set_dir(char *dir, char *child, char *parent)
 {
   #if defined(WIN32)
-  snprintf(dir, 256, "%s\\%s", roaming_dir, dir_name);
+  snprintf(dir, 256, "%s\\%s", parent, child);
   #else
   snprintf(dir, 256, "%s/%s", parent, child);
   #endif
