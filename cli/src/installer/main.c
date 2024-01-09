@@ -38,6 +38,9 @@ int main(void);
 
   switch (arg_parse(argc, argv))
   {
+    case 1:
+      installed = 1;
+      break;
     case 0:
       installed = 0;
       break;
@@ -49,13 +52,20 @@ int main(void);
       uninstall();
       installed = 1;
       break;
+    case -3:
+      uninstall();
+      installed = 1;
     default:
       printf("No arguments provided. No action taken.\nAvailable arguments:\n\tTED_installer -I (Install)\n\tTED_installer -R (Reinstall)\n\tTED_installer -U (Uninstall)\n\tTED_installer -u (Update)\n");
+      installed = 1;
       break;
   }
 
   if (installed != 1)
+  {
+
     linux_install();
+  }
 
   #endif
 
