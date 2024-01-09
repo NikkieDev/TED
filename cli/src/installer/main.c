@@ -13,9 +13,14 @@ User:
 
 #ifdef __unix__
 #include <unistd.h>
-#endif
+#include "headers/args.h"
 
-int main(void)
+
+int main(int argc, char** argv)
+
+#else
+int main(void);
+#endif
 {
   printf("TED Says Hi!\n");
   #if defined(WIN32)
@@ -29,6 +34,7 @@ int main(void)
     exit(1);
   }
 
+  if (arg_parse(argc, argv) == -1) printf("Reinstalling..\n"); reinstall();
   create_lin_dump();
   fetch_lin_exec();
   #endif

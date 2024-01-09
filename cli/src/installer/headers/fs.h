@@ -9,4 +9,6 @@ void fetch_win_executable();
 int create_lin_dump();
 void fetch_lin_exec();
 
+void reinstall();
+
 #endif

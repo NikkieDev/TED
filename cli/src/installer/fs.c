@@ -1,5 +1,11 @@
+/*
+Would have:
+1. Check if installation is corrupt. Missing files for example. Ask to fix
+*/
+
 #include "headers/fs.h"
 #include "headers/cmdout.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <sys/stat.h>
@@ -168,7 +174,11 @@ int create_lin_dump()
     {
       snprintf(buf, sizeof(buf), "Directory %s already exists", dirs[i]);
       print_installer("filesystem", buf, 0);
-      ask_reinstall();
+
+      if (ask_reinstall() == 0){
+        break;
+        printf("Reinstalling..\n");
+      }
     }
   }
 
@@ -180,4 +190,14 @@ void fetch_lin_exec()
 {
 
 }
+
 #endif
+void reinstall()
+{
+  #if defined(WIN32)
+  #endif
+
+  #ifdef __unix__
+    printf("reinstalling for \033[0;31mlinux\033[0;0m\n");
+  #endif
+}
