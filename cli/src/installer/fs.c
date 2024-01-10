@@ -257,3 +257,8 @@ void reinstall()
     
   #endif
 }
+
+void update()
+{
+  
+}

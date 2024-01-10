@@ -12,9 +12,10 @@
     void linux_install();
     int create_lin_dump();
     void fetch_lin_exec();
-
-    void uninstall();
-    void reinstall();
   #endif
 
+//global
+void uninstall();
+void reinstall();
+void update();
 #endif
