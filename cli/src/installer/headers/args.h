@@ -1,6 +1,6 @@
 #ifndef ARGS_H
 #define ARGS_H
-#pragma onces
+#pragma once
 
 int arg_parse(int _ac, char** _av);
 

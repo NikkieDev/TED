@@ -53,7 +53,7 @@ int main(void);
       installed = 1;
       break;
     case -3:
-      uninstall();
+      update();
       installed = 1;
     default:
       printf("No arguments provided. No action taken.\nAvailable arguments:\n\tTED_installer -I (Install)\n\tTED_installer -R (Reinstall)\n\tTED_installer -U (Uninstall)\n\tTED_installer -u (Update)\n");

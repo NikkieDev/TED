@@ -2,7 +2,8 @@ installer_win:
 	gcc ./cli/src/installer/*.c -o ./out/cli/TED_installer -static-libgcc -lcurl -I ./libs/curl -L"./libs/curl"
 
 installer_lin:
-	gcc ./cli/src/installer/*.c -o ./out/cli/TED_installer -static-libgcc
+	gcc ./cli/src/installer/*.c -o ./out/cli/TED_installer -static-libgcc \
+	&& gcc ./cli/src/server/*.c -o ./out/cli/server -static-libgcc
 
 gui_app:
 	gcc ./gui/src/*.c -o ./out/gui/TED -mwindows -static -static-libgcc

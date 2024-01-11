@@ -10,14 +10,19 @@ int arg_parse(int argc, char** argv)
   
   for (int i = 0; i < argc; ++i)
   {
-    if (strncmp(argv[(size_t)i], "-R", sizeof(argv[(size_t)i])) == 0)
+    char *arg_item = argv[(size_t)i];
+    if (strncmp(arg_item, "-R", sizeof(arg_item)) == 0)
     {
       if (ask_reinstall() == 0) return -1;
       else return 1;
-    } else if (strncmp(argv[(size_t)i], "-U", sizeof(argv[(size_t)i])) == 0)
+    } else if (strncmp(arg_item, "-U", sizeof(arg_item)) == 0)
     {
       if (ask_uninstall() == 0) return -2;
       else return 1;
+    } else if (strncmp(arg_item, "-u", sizeof(arg_item)) == 0)
+    {
+      print_installer("ted", "Updating..", 0);
+      return -3;
     }
   }
 }

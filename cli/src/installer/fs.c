@@ -5,6 +5,7 @@ Would have:
 
 #include "headers/fs.h"
 #include "headers/cmdout.h"
+#include "headers/netw.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -260,5 +261,10 @@ void reinstall()
 
 void update()
 {
-  
+  int socket_fd;
+  int s = server_connect(&socket_fd);
+
+  int closure_status = close_connection(&socket_fd);
+
+  return;
 }
