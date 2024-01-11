@@ -263,6 +263,7 @@ void update()
 {
   int socket_fd;
   int s = server_connect(&socket_fd);
+  send_message(&socket_fd, "update");
 
   int closure_status = close_connection(&socket_fd);
 

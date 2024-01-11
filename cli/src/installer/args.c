@@ -11,6 +11,8 @@ int arg_parse(int argc, char** argv)
   for (int i = 0; i < argc; ++i)
   {
     char *arg_item = argv[(size_t)i];
+    printf("Item: %s\n", arg_item);
+    
     if (strncmp(arg_item, "-R", sizeof(arg_item)) == 0)
     {
       if (ask_reinstall() == 0) return -1;

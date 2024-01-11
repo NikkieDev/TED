@@ -3,7 +3,7 @@ installer_win:
 
 installer_lin:
 	gcc ./cli/src/installer/*.c -o ./out/cli/TED_installer -static-libgcc \
-	&& g++ ./cli/src/server/*.cpp -o ./out/cli/server -static-libgcc
+	&& gcc ./cli/src/server/*.c -o ./out/cli/server -static-libgcc
 
 gui_app:
 	gcc ./gui/src/*.c -o ./out/gui/TED -mwindows -static -static-libgcc
